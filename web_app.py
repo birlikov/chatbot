@@ -1,13 +1,11 @@
 from flask import Flask, render_template, request
 
-from utils import dialog_gpt, save_to_pickle, load_from_pickle, load_keywords_from_csv,\
-    find_custom_answer
+from utils import dialog_gpt, save_to_pickle, load_from_pickle, load_keywords_from_csv, find_custom_answer
 
-TMP_FILENAME_FOR_DIALOGUE_HELPER_DATA = "data/tmp.pkl"
-RESTART_KEYWORDS_PATH = "data/restart_keywords.csv"
-EXIT_KEYWORDS_PATH = "data/exit_keywords.csv"
-CUSTOM_QA_PAIRS_PATH = "data/custom_question_answer_pairs.csv"
-COS_SIM_TRESHOLD = 0.5
+from config import (TMP_FILENAME_FOR_DIALOGUE_HELPER_DATA,
+                    RESTART_KEYWORDS_PATH,
+                    EXIT_KEYWORDS_PATH,
+                    COS_SIM_THRESHOLD)
 
 
 app = Flask(__name__)
@@ -30,7 +28,7 @@ exit_keywords = load_keywords_from_csv(EXIT_KEYWORDS_PATH)
 def get_bot_response():
     user_text = request.args.get('msg')
 
-    custom_answer = find_custom_answer(user_text, threshold=COS_SIM_TRESHOLD)
+    custom_answer = find_custom_answer(user_text, threshold=COS_SIM_THRESHOLD)
     if custom_answer:
         reply_text = custom_answer
     else:
@@ -55,4 +53,4 @@ def get_bot_response():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host= '0.0.0.0', port=80)

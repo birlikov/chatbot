@@ -8,13 +8,15 @@ import torch
 import numpy as np
 import tensorflow_hub as hub
 
+from config import DIALO_GPT_MODEL_SIZE, CUSTOM_QA_PAIRS_PATH
+
 
 logging.basicConfig(
         stream=sys.stderr, level=logging.DEBUG,
     )
 logger = logging.getLogger("utils")
 
-logger.info("Loading Universal Sentence Encoder...\n")
+logger.info("\nLoading Universal Sentence Encoder...\n")
 embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 logger.info("\nDone\n")
 
@@ -55,11 +57,12 @@ def load_and_prepare_custom_qa_from_csv(filename):
     return embeddings, answers
 
 
-logger.info("Loading custom question-answer pairs and prepairing embeddings...")
+logger.info("Loading custom question-answer pairs and preparing embeddings...")
 
-embeddings, answers = load_and_prepare_custom_qa_from_csv("data/custom_question_answer_pairs.csv")
+embeddings, answers = load_and_prepare_custom_qa_from_csv(CUSTOM_QA_PAIRS_PATH)
 
 logger.info("Done\n")
+
 
 def find_custom_answer(user_text, threshold):
     vector = embed([user_text]).numpy()
@@ -71,11 +74,9 @@ def find_custom_answer(user_text, threshold):
     return None
 
 
-model_size = "medium"
-
-logger.info("Loading %s size DialoGPT...\n", model_size)
-tokenizer = AutoTokenizer.from_pretrained(f"microsoft/DialoGPT-{model_size}")
-model = AutoModelForCausalLM.from_pretrained(f"microsoft/DialoGPT-{model_size}")
+logger.info("Loading %s size DialoGPT...\n", DIALO_GPT_MODEL_SIZE)
+tokenizer = AutoTokenizer.from_pretrained(f"microsoft/DialoGPT-{DIALO_GPT_MODEL_SIZE}")
+model = AutoModelForCausalLM.from_pretrained(f"microsoft/DialoGPT-{DIALO_GPT_MODEL_SIZE}")
 logger.info("Done")
 
 
@@ -85,5 +86,3 @@ def dialog_gpt(user_text, chat_history_ids, restart_dialogue):
     chat_history_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
     reply_text = tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
     return reply_text, chat_history_ids
-
-
