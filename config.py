@@ -6,3 +6,6 @@ COS_SIM_THRESHOLD = 0.8
 
 # choose one of "small", "medium", "large"
 DIALO_GPT_MODEL_SIZE = "large"
+
+UNIVERSAL_SENTENCE_ENCODER_MODEL_URL = "https://tfhub.dev/google/universal-sentence-encoder/4"
+

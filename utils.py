@@ -8,7 +8,7 @@ import torch
 import numpy as np
 import tensorflow_hub as hub
 
-from config import DIALO_GPT_MODEL_SIZE, CUSTOM_QA_PAIRS_PATH
+from config import DIALO_GPT_MODEL_SIZE, CUSTOM_QA_PAIRS_PATH, UNIVERSAL_SENTENCE_ENCODER_MODEL_URL
 
 
 logging.basicConfig(
@@ -16,8 +16,9 @@ logging.basicConfig(
     )
 logger = logging.getLogger("utils")
 
-logger.info("\nLoading Universal Sentence Encoder...\n")
-embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+logger.info("\n\n\n")
+logger.info("Loading Universal Sentence Encoder...\n%s\n", UNIVERSAL_SENTENCE_ENCODER_MODEL_URL)
+embed = hub.load(UNIVERSAL_SENTENCE_ENCODER_MODEL_URL)
 logger.info("\nDone\n")
 
 
